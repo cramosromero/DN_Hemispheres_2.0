@@ -10,6 +10,6 @@ pip install -e .
 ```
 to generate results run:
 ```
-python Hemispheres/DroneHamis_9mics.py
+python DN_Hemispheres_2.0/DroneHamis_9mics.py
 ```
 Running these scripts requires a <code>Data</code> folder in the root directory

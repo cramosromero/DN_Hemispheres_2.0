@@ -22,6 +22,7 @@ from dntools import AircraftTools as AircraftTools
 from dntools import FileTools as FileTools
 from dntools import FreqTools as FreqTools
 from dntools import TimeTools as TimeTools
+from dntools import Plots_DN_9mics as plots
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -34,7 +35,6 @@ from matplotlib.cbook import get_sample_data
 from matplotlib.image import imread
 from matplotlib.offsetbox import AnnotationBbox, OffsetImage
 
-import Plots_DN_9mics as plots
 
 # Force browser rendering for .py files
 pio.renderers.default = 'browser'# "notebook"#
