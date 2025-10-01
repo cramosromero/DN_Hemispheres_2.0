@@ -13,7 +13,6 @@ import time
 start_time = time.time()
 import math
 import os
-import pkgutil
 
 # List all importable modules in the current environment
 
