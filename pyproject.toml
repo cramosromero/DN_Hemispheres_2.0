@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "DN_Hemispheres"
+version = "0.2.0"
+description = "Calculation of SPL Hemispheres from measured drone noise outsoors"
+authors = [
+    { name = "Carlos Ramos-Romero", email = "c.a.ramosromero@salford.ac.uk" }
+]
+license = { file = "LICENSE" }
+readme = "README.md"
+keywords = ["Drone", "sUAS", "backpropagation", "NORAH"]
+
+dependencies = [
+    "numpy>=1.21.0",
+    "pandas>=1.3.0",
+    "matplotlib>=3.10",
+    "scipy>=1.16",
+    "cycler>=0.12.1",
+    "ipython",
+    "plotly"
+    
+]
+
+[tool.setuptools.packages.find]
+where = ["./Hemispheres", "./dntools"]
