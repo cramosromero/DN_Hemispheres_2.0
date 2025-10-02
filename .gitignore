@@ -28,6 +28,7 @@ MANIFEST
 # Local files
 Data/
 Plots_outputs/
+Data_out/
 
 
 
