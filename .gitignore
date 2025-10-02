@@ -27,6 +27,7 @@ share/python-wheels/
 MANIFEST
 # Local files
 Data/
+Plots_outputs/
 
 
 

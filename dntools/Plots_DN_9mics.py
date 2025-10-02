@@ -30,7 +30,7 @@ def plot_mics_time(DATA_raw_events, TT, event, DID, lc):
     ax.get_legend().set_title("Microphone")
     ax.set_ylabel('Amplitude [Pa]')
     ax.set_xlabel('Time [s]')
-    plt.show()
+    # plt.show()
     
     return fig
 
@@ -57,7 +57,7 @@ def plot_mic_events_time(TIME_r, Data_acu_segmented, event, microphone, DID, acu
     ax.get_legend().set_title("Events")
     ax.set_ylabel(f"{acu_metric} [dB]")
     ax.set_xlabel('Time [s]')
-    plt.show()
+    # plt.show()
     return fig
  
 
@@ -89,7 +89,7 @@ def plot_spectrogram(press_time_serie, Fs, DID, eve_mic):
     cbar = fig.colorbar(pcm, ax=ax)
     cbar.set_label("SPL [dB/Hz]")
     plt.tight_layout()
-    plt.show()
+    # plt.show()
     
     return fig
 
@@ -115,7 +115,7 @@ def plot_level_Max_thresh(lev_vec, t_vec_segment, DID, acu_metric, lc, event):
     ax.set_ylabel(f"{acu_metric} [dB]")
     ax.set_xlabel('Time [s]')
     plt.tight_layout()
-    plt.show()
+    # plt.show()
     
     return fig
 
