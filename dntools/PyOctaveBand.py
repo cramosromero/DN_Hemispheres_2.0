@@ -3,9 +3,9 @@
 Octave-Band and Fractional Octave-Band filter.
 """
 
+import matplotlib.pyplot as plt
 import numpy as np
 from scipy import signal
-import matplotlib.pyplot as plt
 
 # Public methods
 __all__ = ['octavefilter', 'getansifrequencies', 'normalizedfreq']

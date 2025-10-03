@@ -4,9 +4,10 @@ Created on Tue Aug  9 15:21:36 2022
 
 @author: SES271
 """
+import scipy.signal as ss
 from numpy import pi, polymul
 from scipy.signal.filter_design import bilinear
-import scipy.signal as ss
+
 
 #%%
 def A_weighting(fs):

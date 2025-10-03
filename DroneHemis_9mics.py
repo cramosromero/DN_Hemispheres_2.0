@@ -14,24 +14,27 @@ start_time = time.time()
 import math
 import os
 
-# List all importable modules in the current environment
-
-from dntools import AircraftTools as AircraftTools
-from dntools import FileTools as FileTools
-from dntools import FreqTools as FreqTools
-from dntools import TimeTools as TimeTools
-from dntools import Plots_DN_9mics as plots
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 import plotly.io as pio
+import plotly.offline as pyo
 import scipy.signal as ss
 from cycler import cycler
 from matplotlib import colors, rc
 from matplotlib.cbook import get_sample_data
 from matplotlib.image import imread
 from matplotlib.offsetbox import AnnotationBbox, OffsetImage
+
+from dntools import AircraftTools as AircraftTools
+from dntools import FileTools as FileTools
+from dntools import FreqTools as FreqTools
+from dntools import Plots_DN_9mics as plots
+from dntools import TimeTools as TimeTools
+
+# List all importable modules in the current environment
+
 
 
 # Force browser rendering for .py files
@@ -401,8 +404,12 @@ for i_plot in n_plots:
         
     # Generate theta and phi angles
     """PLOTS SEMIESPHERES, all events - all mics"""
+    # be sure to have the "plot_template.html" in the same directory as this script
     fig = plots.plot_int3D(th, ph, rad_to_deprop, LEVELS_th_ph, i_plot, DID, WIND)
-    fig.write_html(f"{polar_plots_folder}\\{i_plot}_{event}_Sph.html") 
+    # Save as lightweight HTML (uses Plotly.js via CDN, much smaller file size)
+    pyo.plot(fig, filename=f"{polar_plots_folder}\\{i_plot}_{event}_Sph.html", include_plotlyjs="cdn",auto_open=False)
+    # OR save as html directly (heavier file)
+    # fig.write_html(f"{polar_plots_folder}\\{i_plot}_{event}_Sph.html") 
 # %% Save dictionary of Noise Directivities and SWL by band and overall sound power level
 #########################################################################################
 # Output data for saving the results. 

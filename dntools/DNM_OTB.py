@@ -7,12 +7,12 @@ Seperation  TONAL, BROADBAND AND OVERALL
 
 """
 import numpy as np
-import waveform_analysis.weighting_filters as WA
-import dntools.FreqTools as FreqTools
-import dntools.EnvironTools as EnvironTools
-
 import scipy.signal as ss
+import waveform_analysis.weighting_filters as WA
 from scipy.signal import find_peaks
+
+import dntools.EnvironTools as EnvironTools
+import dntools.FreqTools as FreqTools
 
 # %% DroneNoise - Noise Decomposition
 #### Includes of the atmospheric absorption
@@ -142,8 +142,9 @@ def separator_OTB (dist_drone_mics, signal, isAw = True, plotfig = False, Fs=500
             
             
             if plotfig == True and ch==4:
-                from cycler import cycler
                 import matplotlib.pyplot as plt
+                from cycler import cycler
+
                 # import scienceplots #https://www.reddit.com/r/learnpython/comments/ila9xp/nice_plots_for_scientific_papers_theses_and/
                 color_cycler    = cycler(color = ['C0', 'C1', 'C5','C2','C3','C4'])
                 color_cyc =len(color_cycler)*color_cycler

@@ -21,7 +21,8 @@ dependencies = [
     "cycler>=0.12.1",
     "ipython>=6.9",
     "plotly>=6.2",
-    "xlsxwriter >=3.0"
+    "xlsxwriter >=3.0",
+    "jinja2" >= 3.0
     
 ]
 

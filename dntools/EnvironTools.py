@@ -9,7 +9,9 @@ SOME FUNCTIONS FOR ENVIRONMENTAL CONDITIONS to TAKE into acount in DEPROPAGATION
     
 """
 import math
+
 import numpy as np
+
 
 #%%  Geometrical microhone setup
 ##  %%%%%%%%%#################################

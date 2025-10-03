@@ -4,12 +4,13 @@ Created on Tue Oct  4 17:03:00 2022
 
 @author: Asus
 """
-import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.widgets import SpanSelector
+import numpy as np
 import scipy.signal as ss
+from matplotlib.widgets import SpanSelector
 
 import dntools.PyOctaveBand as PyOctaveBand
+
 
 # %% Calculate the Power Spectral Density
 #####################################################
@@ -185,8 +186,7 @@ def calc_SPLs(DATA_raw_events, Fs, fraction, limits, show=0) :
 # %% A_weighting
 ########################################################## 
 from numpy import pi, polymul
-from scipy.signal import bilinear
-from scipy.signal import lfilter
+from scipy.signal import bilinear, lfilter
 
 
 def A_weighting(fs):

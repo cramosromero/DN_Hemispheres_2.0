@@ -4,10 +4,11 @@ Created on Tue Sep 20 17:19:58 2022
 
 @author: SES271@CR
 """
-import numpy as np
-import glob # STRINGS
+import glob  # STRINGS
 import os
-from scipy import io #READ MAT FILES
+
+import numpy as np
+from scipy import io  # READ MAT FILES
 
 
 # %% DroneNoise Measurement filenames

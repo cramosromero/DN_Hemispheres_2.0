@@ -9,9 +9,11 @@ SOME FUNCTIONS FOR AIRCRAFT NOISE METRICS AND CALCULATIONS:
     SEL_def_calc ->  by deffinition Min_2015
     depropagation -> NASA-subgrup 2
 """
-import numpy as np
-import dntools.EnvironTools as EnvironTools
 import matplotlib.pyplot as plt
+import numpy as np
+
+import dntools.EnvironTools as EnvironTools
+
 
 # %% SEL Calculation based on ACU data
 ################################################################
