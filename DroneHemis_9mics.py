@@ -21,12 +21,12 @@ import plotly.graph_objects as go
 import plotly.io as pio
 import plotly.offline as pyo
 import scipy.signal as ss
+import waveform_analysis
 from cycler import cycler
 from matplotlib import colors, rc
 from matplotlib.cbook import get_sample_data
 from matplotlib.image import imread
 from matplotlib.offsetbox import AnnotationBbox, OffsetImage
-import waveform_analysis
 
 from dntools import AircraftTools as AircraftTools
 from dntools import FileTools as FileTools

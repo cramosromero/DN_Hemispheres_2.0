@@ -7,6 +7,7 @@ import plotly.io as pio
 import scipy.signal as ss
 from matplotlib import colors
 
+
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 def plot_mics_time(DATA_raw_events, TT, event, DID, lc):
     """Plot of time series raw data from all microhpnes for a given event
