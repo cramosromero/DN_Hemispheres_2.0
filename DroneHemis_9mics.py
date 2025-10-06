@@ -34,7 +34,9 @@ from dntools import Plots_DN_9mics as plots
 from dntools import TimeTools as TimeTools
 
 # List all importable modules in the current environment
-
+# If istalled LaTex for font style in figures.
+rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
+rc('text', usetex=True)
 
 
 # Force browser rendering for .py files
@@ -64,7 +66,7 @@ to_bands        =[20, 25, 31, 40, 50, 63, 80, 100, 125, 160,
 # Measurement name metadata in the filename:
 Cases    = [
     # ['EE','T1',25,'F05','N','S','uw', 2],
-    ['Ed','M3',10,'F05','Y','W','dw', 2]
+    ['Ed','M3',10,'F05','Y','W','dw', 3]
     ] # add more cases if needed [starting, wind, payload, droneID, recording]
 case = 0 # choose the case to process
 
