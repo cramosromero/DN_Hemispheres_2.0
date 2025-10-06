@@ -26,6 +26,7 @@ from matplotlib import colors, rc
 from matplotlib.cbook import get_sample_data
 from matplotlib.image import imread
 from matplotlib.offsetbox import AnnotationBbox, OffsetImage
+import waveform_analysis
 
 from dntools import AircraftTools as AircraftTools
 from dntools import FileTools as FileTools
@@ -108,6 +109,22 @@ TIME_r, vec_time, Data_raw_segmented, Data_acu_segmented = TimeTools.segment_tim
 """PLOTS DATA_mic same microphone, all events"""
 fig = plots.plot_mic_events_time(TIME_r, Data_acu_segmented, event, microphone, DID, acu_metric, lc)
 # fig.savefig(f"{results_folder}\\mic{microphone}_alleve.svg", format="svg", dpi=300)
+
+# %%A-weighting Here, culd be located the Aw
+############################################
+
+AW_cond = '' # default o weigthing
+A_weighting = True
+if A_weighting ==True:
+    AW_cond = 'A'
+    DATA_raw_events_A = np.zeros(DATA_raw_events.shape)
+    #from waveform_analysis import ABC_weighting, A_weighting, A_weight
+    for ee in range(DATA_raw_events.shape[0]):
+        for ch in range (DATA_raw_events.shape[2]): 
+            DATA_raw_events_A[ee,:,ch] = waveform_analysis.A_weight(DATA_raw_events[ee,:,ch], Fs) 
+    DATA_raw_events = DATA_raw_events_A 
+    print('*****A_weighted******| YES')
+    
 # %% Dedoppler effect correction
 ##########################################
 """Geometry for Dedoppler correction"""
@@ -149,7 +166,7 @@ DATA_acu_events_dedopp = np.array(DATA_acu_events_dedopp)   #rewriting the array
 _Dedopp =True
 if _Dedopp==True:
     DATA_raw_events = DATA_acu_events_dedopp
-   
+
 # %%ASpetrogrmas for an specific  microphone and event.
 ##########################################################
 #eve_mic = [event, 5]#{1,2,3,4,5,6,7,8,9} # event and microhphone to plot the spectrogram

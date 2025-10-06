@@ -79,7 +79,7 @@ def plot_spectrogram(press_time_serie, Fs, DID, eve_mic):
     f, t, Sxx = ss.spectrogram(press_time_serie, nperseg=(2**16)//6, fs=Fs, nfft=2**18, noverlap=noverlap, scaling='density') # spectrogram
 
     fig, (ax) = plt.subplots(figsize=(6,3))
-    pcm = ax.pcolormesh(t, f, 10*np.log10(Sxx/(20e-6)**2), vmin=5, vmax=60, cmap='viridis', shading='auto') # vmin=10,vmax=60 
+    pcm = ax.pcolormesh(t, f, 10*np.log10(Sxx/(20e-6)**2), vmin=5, vmax=50, cmap='viridis', shading='auto') # vmin=10,vmax=60 
     ax.set_title(f"event_{eve_mic[0]} mic_{eve_mic[1]} {DID}")
     ax.set_xlabel("Time [s]")
     ax.set_ylabel("Frequency [Hz]") 
