@@ -103,7 +103,7 @@ fig = plots.plot_mics_time(DATA_raw_events, TT, event, DID, lc)
 # fig.savefig(f"{results_folder}\\ev{event}_allmics_raw.svg", format="svg", dpi=300)
 """SIGNAL SEGMENTATION based on LA_max value of the medianfilter signal"""
 # This segment could be analized with FFT to obtain the PSD, then the band content
-time_slice  = 5 #in seconds
+time_slice  = 7 #in seconds
 TIME_r, vec_time, Data_raw_segmented, Data_acu_segmented = TimeTools.segment_time_ADJUST(time_slice, Fs,
                                                                                               DATA_raw_events, DATA_acu_events)
 """PLOTS DATA_mic same microphone, all events"""
@@ -181,12 +181,18 @@ fig = plots.plot_spectrogram(press_time_serie, Fs, DID, [event, microphone])
 N_plots_dir = {} # For saving the calculated directivity in a Dictionary (partial hemisphere)
 SWL_band = {} #For saving the Integrated Sound Power Level in a Dictionary
 N_plots_dir_HEMIS = {} # For saving the calculated directivity in a dictionary (Half sphere)
-""" Based on time signals lower than the Lmax"""
-THRESH = 20 #in dB
-segment_by_THRESH_events_raw, segment_by_THRESH_events_acu  = TimeTools.segment_THRESH(THRESH,Fs,Data_raw_segmented, Data_acu_segmented,microphone)
+""" Based on time signals lower than the Lmax or time"""
+segmented_based = 'time' #{'time','level'} 
 
-lev_vec = segment_by_THRESH_events_acu[event-1] # size(data,mics) Sund Levels
-raw_vec = segment_by_THRESH_events_raw[event-1] # size(data,mics) Passcals
+if segmented_based=='time':
+    lev_vec = Data_acu_segmented[event-1,:,:]
+    raw_vec = Data_raw_segmented[event-1,:,:]
+
+elif segmented_based=='level':    
+    THRESH = 20 #in dB
+    segment_by_THRESH_events_raw, segment_by_THRESH_events_acu  = TimeTools.segment_THRESH(THRESH,Fs,Data_raw_segmented, Data_acu_segmented,microphone)
+    lev_vec = segment_by_THRESH_events_acu[event-1] # size(data,mics) Sund Levels
+    raw_vec = segment_by_THRESH_events_raw[event-1] # size(data,mics) Passcals
 
 raw_vec = np.reshape(raw_vec,(1,raw_vec.shape[0],raw_vec.shape[1])) #suitable for the SPL by ban definition
 t_chunk = lev_vec.shape[0]/Fs
@@ -194,7 +200,7 @@ t_vec_segment = np.linspace(0, lev_vec[:,4].shape[0],lev_vec[:,4].shape[0])/Fs
 print("seconds of selected chunk:"+str(t_chunk))
 
 """PLOTS level time series for a given microphone and event that exceeds the THRESHold"""
-# fig = plots.plot_level_Max_thresh(lev_vec, t_vec_segment, DID, acu_metric, lc, event)
+fig = plots.plot_level_Max_thresh(lev_vec, t_vec_segment, DID, acu_metric, lc, event)
 # %% Back-propagation of the segmented signal based on Lmax - threshold
 ############################################
 
