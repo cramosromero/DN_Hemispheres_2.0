@@ -65,7 +65,7 @@ to_bands        =[20, 25, 31, 40, 50, 63, 80, 100, 125, 160,
 # Measurement name metadata in the filename:
 Cases    = [
     # ['EE','T1',25,'F05','N','S','uw', 2],
-    ['Ed','M3',10,'F05','Y','W','dw', 1]
+    ['Ed','M3',10,'F05','Y','W','dw', 2]
     ] # add more cases if needed [starting, wind, payload, droneID, recording]
 case = 0 # choose the case to process
 
@@ -454,3 +454,16 @@ with pd.ExcelWriter(f"{results_folder}\\Hem_{identifier}_{event}_{segmented_base
 
 print(dist_ground_mics)
 print("Process finished --- %s seconds ---" % (time.time() - start_time))      
+        
+
+# %% TRansformation of the hemipheres to NoiseMAppint  coordinate systems.
+phi_mine = np.round(ph*180/np.pi, 1)
+theta_mine = deg_th
+Comp_array = N_plots_dir_HEMIS['band_Overall']
+# Loop through and print indices
+spl_th_ph_pivot = []
+for i in range(Comp_array.shape[0]):           # row index
+    for j in range(Comp_array.shape[1]):    # column index
+        spl_th_phi = np.array([theta_mine[j], phi_mine[i], Comp_array[i,j]])
+        spl_th_ph_pivot.append(spl_th_phi)
+spl_th_ph_pivot = np.array(spl_th_ph_pivot )
