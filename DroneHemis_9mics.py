@@ -38,8 +38,6 @@ from dntools import TimeTools as TimeTools
 # If istalled LaTex for font style in figures.
 rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
 rc('text', usetex=True)
-
-
 # Force browser rendering for .py files
 pio.renderers.default = 'browser'# "notebook"#
 
@@ -67,7 +65,7 @@ to_bands        =[20, 25, 31, 40, 50, 63, 80, 100, 125, 160,
 # Measurement name metadata in the filename:
 Cases    = [
     # ['EE','T1',25,'F05','N','S','uw', 2],
-    ['Ed','M3',10,'F05','Y','W','dw', 3]
+    ['Ed','M3',10,'F05','Y','W','dw', 1]
     ] # add more cases if needed [starting, wind, payload, droneID, recording]
 case = 0 # choose the case to process
 
@@ -103,7 +101,7 @@ fig = plots.plot_mics_time(DATA_raw_events, TT, event, DID, lc)
 # fig.savefig(f"{results_folder}\\ev{event}_allmics_raw.svg", format="svg", dpi=300)
 """SIGNAL SEGMENTATION based on LA_max value of the medianfilter signal"""
 # This segment could be analized with FFT to obtain the PSD, then the band content
-time_slice  = 7 #in seconds
+time_slice  = 15 #in seconds
 TIME_r, vec_time, Data_raw_segmented, Data_acu_segmented = TimeTools.segment_time_ADJUST(time_slice, Fs,
                                                                                               DATA_raw_events, DATA_acu_events)
 """PLOTS DATA_mic same microphone, all events"""
@@ -114,7 +112,7 @@ fig = plots.plot_mic_events_time(TIME_r, Data_acu_segmented, event, microphone, 
 ############################################
 
 AW_cond = '' # default o weigthing
-A_weighting = True
+A_weighting = False
 if A_weighting ==True:
     AW_cond = 'A'
     DATA_raw_events_A = np.zeros(DATA_raw_events.shape)
@@ -201,13 +199,14 @@ print("seconds of selected chunk:"+str(t_chunk))
 
 """PLOTS level time series for a given microphone and event that exceeds the THRESHold"""
 fig = plots.plot_level_Max_thresh(lev_vec, t_vec_segment, DID, acu_metric, lc, event)
+# fig.savefig(f"{results_folder}\\eve{event}mic{microphone}_spect.png", format="png", dpi=300)
 # %% Back-propagation of the segmented signal based on Lmax - threshold
 ############################################
 
 # find the sample with the(Lmax) at central microphone
 max_Lmax_sam = np.argmax(lev_vec[:,4]) # central microphone
 nspls = lev_vec.shape[0] # number of samples in Section
-n_ch = 15 #number of chunks eary if it is an odd number
+n_ch = 31 #number of chunks eary if it is an odd number
 jump = nspls//n_ch
 
 """ MAP of segments in the fligh path"""
@@ -438,7 +437,7 @@ for i_plot in n_plots:
 # %% Save dictionary of Noise Directivities and SWL by band and overall sound power level
 #########################################################################################
 # Output data for saving the results. 
-with pd.ExcelWriter(f"{results_folder}\\Hem_{identifier}_{event}.xlsx", engine="xlsxwriter") as writer:
+with pd.ExcelWriter(f"{results_folder}\\Hem_{identifier}_{event}_{segmented_based}.xlsx", engine="xlsxwriter") as writer:
     for sheet_name, content in N_plots_dir_HEMIS.items():
         # Convert content to DataFrame if it isn't already
         if isinstance(content, pd.DataFrame):
