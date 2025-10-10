@@ -455,7 +455,6 @@ with pd.ExcelWriter(f"{results_folder}\\Hem_{identifier}_{event}_{segmented_base
 print(dist_ground_mics)
 print("Process finished --- %s seconds ---" % (time.time() - start_time))      
         
-
 # %% TRansformation of the hemipheres to NoiseMAppint  coordinate systems.
 phi_mine = np.round(ph*180/np.pi, 1)
 theta_mine = deg_th
