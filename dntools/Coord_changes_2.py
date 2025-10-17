@@ -2,77 +2,13 @@ import numpy as np
 from matplotlib import pyplot as plt
 import math
 
+
 # %% transform form cartesian to polar based on Noise Mapping convention
-def cartesian_to_spherical(x, y, z):
-    """
-    Convert Cartesian coordinates (x, y, z) to spherical coordinates (r, theta, phi).
-    
-    Parameters
-    ----------
-    x, y, z : np.ndarray
-        Cartesian coordinates. Must have the same shape.
-    
-    Returns
-    -------
-    r : np.ndarray
-        Radius
-    theta : np.ndarray
-        Polar angle (0 ≤ θ ≤ π)
-    phi : np.ndarray
-        Azimuthal angle (0 ≤ φ < 2π)
-    """
-    # Compute spherical coordinates
-    r = np.sqrt(x**2 + y**2 + z**2)              # radius
-    theta = np.arctan2(np.sqrt(x**2 + y**2), z) # polar angle from z-axis
-    theta = np.pi/2 - theta                      # adjust to go from +pi/2 (top) to -pi/2 (bottom)
-    phi = np.arctan2(y, x)                       # azimuthal angle
-    phi = np.mod(phi, 2*np.pi)                   # make phi range 0 to 2pi
-    
-    return r, theta, phi
-
-
-def cartesian_to_spherical_NM(r, x, y, z):
-    """
-    Convert Cartesian coordinates (x, y, z) to spherical coordinates (theta', phi')
-    using the 'NM' custom convention:
-
-    - Theta' (polar): +90° at 'up' (Y+), 0° at equator, -90° at 'down' (Y-)
-    - Phi'   (azimuth): 0° at 'front' (Z+), 90° at 'right' (X+), 180° at 'back' (Z-), 270° at 'left' (X-)
-
-    Parameters
-    ----------
-    r : float or ndarray
-        Radius (distance from origin)
-    x, y, z : float or ndarray
-        Cartesian coordinates.
-
-    Returns
-    -------
-    theta_p, phi_p : ndarray
-        Theta' and Phi' in radians.
-    theta_p_deg, phi_p_deg : ndarray
-        Theta' and Phi' in degrees.
-    """
-    # --- Standard spherical coordinates ---
-    # Avoid division by zero
-    r_safe = np.where(r == 0, np.finfo(float).eps, r)
-    theta_std = np.arccos(z / r_safe)   # polar from +Z axis
-    phi_std = np.arctan2(y, x)          # azimuth, 0 along +X, increases toward +Y
-
-    # --- Custom coordinate transformation ---
-    theta_p = np.pi/2 - theta_std       # polar: +90° up → -90° down
-    phi_p = np.arctan2(x, z)            # azimuth: 0 front (+Z), 90 right (+X)
-    phi_p = np.mod(phi_p, 2*np.pi)      # wrap to [0, 2π)
-
-    # --- Convert to degrees ---
-    theta_p_deg = np.degrees(theta_p)
-    phi_p_deg = np.degrees(phi_p)
-
-    return theta_p_deg, phi_p_deg
-
 
 rad = 1
 
+# %%
+############################ DATA
 th = np.array([0.        , 0.26179939, 0.52359878, 0.78539816, 1.04719755,
        1.30899694, 1.57079633, 1.83259571, 2.0943951 , 2.35619449,
        2.61799388, 2.87979327, 3.14159265])
@@ -153,6 +89,8 @@ LEVELS_th_ph = np.array([[55.3, 59. , 62.4, 67.8, 64.1, 65.9, 63.4, 65.7, 59.8, 
         55.1, 51.5],
        [51.5, 55.1, 58.6, 59.8, 56.7, 53.9, 49.4, 45.2, 59. , 65.6, 56.2,
         55.1, 51.5]])
+
+rad= 1
 # %%Plot My system
 ##################
 th_all, ph_all = np.meshgrid(th,ph)
@@ -171,43 +109,37 @@ ax.set_zlabel("Z-axis")
 ax.set_xlim(-1,1)
 ax.set_ylim(-1,1)
 ax.set_zlim(-1,1)
+# %% Convert Cartesian (x, y, z) to spherical (r, theta', phi')
+########################
+# Compute radius (should be 1 if unit sphere)
+r_new = np.sqrt(x**2 + y**2 + z**2)
 
-# %% Inverse to new polar coordinates as Noise model convention
-# inverse transform
-r2, th2, ph2 = cartesian_to_spherical(x, y, z)
+# Theta' is polar angle from top (90 deg) to bottom (-90 deg)
+# Elevation = arcsin(z/r)
+theta_prime = np.degrees(np.arcsin(z / r_new))  # in degrees from -90 to 90
 
-x2 = rad* np.cos(th2)
-y2 = rad * np.sin(th2) * np.sin(ph2)
-z2 = -rad* np.sin(th2) * np.cos(ph2)
+# Phi' is azimuth from 0 to 360
+phi_prime = np.degrees(np.arctan2(y, x))  # arctan2 gives -180 to 180
+phi_prime = (phi_prime + 360) % 360  # convert to 0-360
 
+theta_rad = np.radians(theta_prime)
+phi_rad = np.radians(phi_prime)
+# Convert back to Cartesian for plotting
+X = r_new * np.cos(theta_rad) * np.cos(phi_rad)
+Y = r_new * np.cos(theta_rad) * np.sin(phi_rad)
+Z = r_new * np.sin(theta_rad)
+
+
+#Scatter plot with colors preserved
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
-sc = ax.scatter(x2, y2, z2, c=LEVELS_th_ph, cmap='viridis', s=50)
+sc = ax.scatter(X, Y, Z, c=LEVELS_th_ph, cmap='viridis', s=50)
 
-# --- Add labels and title ---
 ax.set_xlabel("X-axis")
 ax.set_ylabel("Y-axis")
 ax.set_zlabel("Z-axis")
-ax.set_xlim(-1,1)
-ax.set_ylim(-1,1)
-ax.set_zlim(-1,1)
-
-# Rotation (clockwise 90 degrees in x-y plane)
-theta = np.pi / 2  # 90 degrees
-
-# Apply rotation around Y-axis
-x_rot = x2 * np.cos(theta) + z2 * np.sin(theta)
-y_rot = y2
-z_rot = -x2 * np.sin(theta) + z2 * np.cos(theta)
-
-fig = plt.figure()
-ax = fig.add_subplot(111, projection='3d')
-sc = ax.scatter(x_rot, y_rot, z_rot, c=LEVELS_th_ph, cmap='viridis', s=50)
-
-# --- Add labels and title ---
-ax.set_xlabel("X-axis")
-ax.set_ylabel("Y-axis")
-ax.set_zlabel("Z-axis")
+ax.set_xlim(-1, 1)
+ax.set_ylim(-1, 1)
+ax.set_zlim(-1, 1)
 
 plt.show()
-# %%
