@@ -33,6 +33,7 @@ from dntools import FileTools as FileTools
 from dntools import FreqTools as FreqTools
 from dntools import Plots_DN_9mics as plots
 from dntools import TimeTools as TimeTools
+from ISOtoNM import ISOtoNM
 
 # List all importable modules in the current environment
 # If istalled LaTex for font style in figures.
@@ -59,7 +60,7 @@ deg_th          = np.array([-90,-75,-60,-45,-30,-15,0,15,30,45,60,75,90]) # thet
 to_bands        =[20, 25, 31, 40, 50, 63, 80, 100, 125, 160,
                   200, 250, 315, 400, 500, 630, 800, 1_000, 1_250, 1_600, 
                   2_000, 2_500, 3_150, 4_000, 5_000, 6_300, 8_000, 10_000, 12_500, 16_000, 20_000] #central 1/3 octave bands
-
+rad = 1 #[m] # radius of the hemisphere to depropagate the sound levels
 #%% LOADING Data from Mat files.
 ##########################################
 # Measurement name metadata in the filename:
@@ -179,6 +180,7 @@ fig = plots.plot_spectrogram(press_time_serie, Fs, DID, [event, microphone])
 N_plots_dir = {} # For saving the calculated directivity in a Dictionary (partial hemisphere)
 SWL_band = {} #For saving the Integrated Sound Power Level in a Dictionary
 N_plots_dir_HEMIS = {} # For saving the calculated directivity in a dictionary (Half sphere)
+N_NoiseMaped_dir = {} # For saving the calculated directivity in a dictionary (NoiseMapping coordinates)
 """ Based on time signals lower than the Lmax or time"""
 segmented_based = 'time' #{'time','level'} 
 
@@ -241,7 +243,7 @@ for win_ord in range(len(sm)):
 """ SPL Back-PROPAGATION """
 L_by_band_chunk_BP = [] #saving the propagated band levels on each chunk BAck propagated
 DI_PHI = []
-rad_to_deprop = 1 #[m]
+rad_to_deprop = rad #[m]
 heightAGL = HAGL #[m]
 
 for win_ord in range(len(levs_by_band_chunck)):
@@ -434,6 +436,15 @@ for i_plot in n_plots:
     pyo.plot(fig, filename=f"{polar_plots_folder}\\{i_plot}_{event}_Sph.html", include_plotlyjs="cdn",auto_open=False)
     # OR save as html directly (heavier file)
     # fig.write_html(f"{polar_plots_folder}\\{i_plot}_{event}_Sph.html") 
+    
+    
+    # %%Transformation to NoiseMapping coordinates for Hemisphere
+    ############################################################
+    """ISOtoNM: changes the doordinate representation form ISO standard to NoiseModelling.
+    Saved in N_NoiseMaped_dir by band and overall"""
+    (theta_prime, phi_prime, LEVELS_th_ph) = ISOtoNM (rad, th,ph, LEVELS_th_ph)
+    N_NoiseMaped_dir[f'band_{i_plot}'] = [theta_prime, phi_prime, LEVELS_th_ph]
+    
 # %% Save dictionary of Noise Directivities and SWL by band and overall sound power level
 #########################################################################################
 # Output data for saving the results. 
@@ -455,14 +466,16 @@ with pd.ExcelWriter(f"{results_folder}\\Hem_{identifier}_{event}_{segmented_base
 print(dist_ground_mics)
 print("Process finished --- %s seconds ---" % (time.time() - start_time))      
         
-# %% TRansformation of the hemipheres to NoiseMAppint  coordinate systems.
+# %% TRansformation of the hemipheres to NoiseMAppint input tyupe of coordinates
 phi_mine = np.round(ph*180/np.pi, 1)
 theta_mine = deg_th
 Comp_array = N_plots_dir_HEMIS['band_Overall']
 # Loop through and print indices
 spl_th_ph_pivot = []
-for i in range(Comp_array.shape[0]):           # row index
+for i in range(Comp_array.shape[0]):        # row index
     for j in range(Comp_array.shape[1]):    # column index
         spl_th_phi = np.array([theta_mine[j], phi_mine[i], Comp_array[i,j]])
         spl_th_ph_pivot.append(spl_th_phi)
 spl_th_ph_pivot = np.array(spl_th_ph_pivot )
+
+# %%
