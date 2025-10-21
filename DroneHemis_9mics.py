@@ -449,7 +449,7 @@ for i_plot in n_plots:
 #########################################################################################
 # Output data for saving the results. 
 with pd.ExcelWriter(f"{results_folder}\\Hem_{identifier}_{event}_{segmented_based}.xlsx", engine="xlsxwriter") as writer:
-    for sheet_name, content in N_plots_dir_HEMIS.items():
+    for key, content in N_plots_dir_HEMIS.items():
         # Convert content to DataFrame if it isn't already
         if isinstance(content, pd.DataFrame):
             df = content
@@ -458,24 +458,24 @@ with pd.ExcelWriter(f"{results_folder}\\Hem_{identifier}_{event}_{segmented_base
         # Write to sheet
         df = pd.DataFrame(content, columns=deg_th[:len(content[0])]) #first raw with THETA angles
         df.insert(0, "Phi", np.round(ph*180/np.pi, 1)) #first columns with PHI angles
-        df.to_excel(writer, sheet_name=sheet_name, index=False)
+        df.to_excel(writer, sheet_name=key, index=False)
     # Save the SWL results in a separate sheet
     swl_df = pd.DataFrame(list(SWL_band.items()), columns=['Band', 'SWL (dB)'])
     swl_df.to_excel(writer, sheet_name='SWL_Bands', index=False)
 
-print(dist_ground_mics)
-print("Process finished --- %s seconds ---" % (time.time() - start_time))      
-        
-# %% TRansformation of the hemipheres to NoiseMAppint input tyupe of coordinates
-phi_mine = np.round(ph*180/np.pi, 1)
-theta_mine = deg_th
-Comp_array = N_plots_dir_HEMIS['band_Overall']
-# Loop through and print indices
-spl_th_ph_pivot = []
-for i in range(Comp_array.shape[0]):        # row index
-    for j in range(Comp_array.shape[1]):    # column index
-        spl_th_phi = np.array([theta_mine[j], phi_mine[i], Comp_array[i,j]])
-        spl_th_ph_pivot.append(spl_th_phi)
-spl_th_ph_pivot = np.array(spl_th_ph_pivot )
+with pd.ExcelWriter(f"{results_folder}\\Hem_{identifier}_{event}_{segmented_based}_NM.xlsx", engine="xlsxwriter") as writer:
+    for key, content in N_NoiseMaped_dir.items():
+        theta_NM = np.reshape(content[0],-1)  # Theta angles in NoiseModelling coordinates
+        phi_NM = np.reshape(content[1],-1)   # Phi angles in NoiseModelling coordinates
+        levels_NM = np.reshape(content[2],-1)  # SPL values
+        DIR_NM = np.array([theta_NM, phi_NM, levels_NM])
+        # Convert the inner dictionary to a DataFrame
+        df = pd.DataFrame(DIR_NM.T, columns=['Theta_NM (deg)', 'Phi_NM (deg)', 'SPL (dB)'])
+        # Round to 1 decimal place
+        df = df.round(1)
+        # Write to Excel sheet
+        df.to_excel(writer, sheet_name=key, index=False)
 
+print(dist_ground_mics)
+print("Process finished --- %s seconds ---" % (time.time() - start_time))  
 # %%
