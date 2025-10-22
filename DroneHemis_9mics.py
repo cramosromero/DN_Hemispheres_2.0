@@ -65,8 +65,8 @@ rad = 1 #[m] # radius of the hemisphere to depropagate the sound levels
 ##########################################
 # Measurement name metadata in the filename:
 Cases    = [
-    ['EE','T1',25,'F15','N','S','uw', 2],
-    # ['Ed','M3',10,'F15','Y','W','uw', 3]
+    ['EE','T1',25,'F05','N','S','uw', 2],
+    #['Ed','M3',10,'F05','Y','E','uw', 2]
     ] # add more cases if needed [starting, wind, payload, droneID, recording]
 case = 0 # choose the case to process
 
@@ -102,7 +102,7 @@ fig = plots.plot_mics_time(DATA_raw_events, TT, event, DID, lc)
 # fig.savefig(f"{results_folder}\\ev{event}_allmics_raw.svg", format="svg", dpi=300)
 """SIGNAL SEGMENTATION based on LA_max value of the medianfilter signal"""
 # This segment could be analized with FFT to obtain the PSD, then the band content
-time_slice  = 15#15 #in seconds
+time_slice = 9 if OPE == 'F15' else 19 # seconds of signal to be segmented
 TIME_r, vec_time, Data_raw_segmented, Data_acu_segmented = TimeTools.segment_time_ADJUST(time_slice, Fs,
                                                                                               DATA_raw_events, DATA_acu_events)
 """PLOTS DATA_mic same microphone, all events"""
@@ -289,7 +289,10 @@ if not os.path.exists(polar_plots_folder):
 ###########
 
 
-n_plots = [125, 500, 1000, 2000, 4000, "Overall"] # for being ploted and saved
+n_plots = [20, 25, 31, 40, 50, 63, 80, 100, 125, 160,
+                200, 250, 315, 400, 500, 630, 800, 1_000, 1_250, 1_600, 
+                2_000, 2_500, 3_150, 4_000, 5_000, 6_300, 8_000, 10_000, 12_500, 16_000,
+                20_000, "Overall"] # for being ploted and saved
 # Here FOR for N plots
 for i_plot in n_plots:
     
