@@ -26,7 +26,7 @@ def ISOtoNM (rad, th,ph, LEVELS_th_ph):
 
     # Phi' is azimuth from 0 to 360
     phi_prime = np.degrees(np.arctan2(y, x))  # arctan2 gives -180 to 180
-    phi_prime = (phi_prime + 360) % 360  # convert to 0-360
+    phi_prime = ((phi_prime + 360) % 360) +90  # convert to 0-360 front at 90 deg
 
     theta_rad = np.radians(theta_prime)
     phi_rad = np.radians(phi_prime)
