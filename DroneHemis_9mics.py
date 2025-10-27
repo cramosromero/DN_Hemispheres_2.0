@@ -371,9 +371,9 @@ for i_plot in n_plots:
         Hemisphere[add_row_up:LEVELS_th_ph.shape[0]+add_row_up, add_coll] = Hemisphere[add_row_up:LEVELS_th_ph.shape[0]+add_row_up, 
                                                                                 add_column_left-the_add] - G
         #symetric behaivour
-        Hemisphere[add_row_up:LEVELS_th_ph.shape[0]+add_row_up, LEVELS_th_ph.shape[1]+the_add+2] = Hemisphere[add_row_up:LEVELS_th_ph.shape[0]+add_row_up,
-          
-        """add here direct extrapolation if NORAH is applied"""                                                                                          add_coll]
+        Hemisphere[add_row_up:LEVELS_th_ph.shape[0]+add_row_up, LEVELS_th_ph.shape[1]+the_add+2] = Hemisphere[add_row_up:LEVELS_th_ph.shape[0]+add_row_up, add_coll]
+        
+        """add here direct extrapolation if NORAH is applied"""
     
     #PHI extrapolation (HORIZONTAL ANGLE) estimated for argmin NOHRA constant extrapolation
     phi_up_hemisphere = np.tile(Hemisphere[add_row_up,:], (add_row_up,1))
