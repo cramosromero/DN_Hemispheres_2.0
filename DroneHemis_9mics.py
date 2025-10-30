@@ -21,6 +21,7 @@ import plotly.graph_objects as go
 import plotly.io as pio
 import plotly.offline as pyo
 import scipy.signal as ss
+from scipy.ndimage import minimum_filter
 import waveform_analysis
 from cycler import cycler
 from matplotlib import colors, rc
@@ -376,18 +377,29 @@ for i_plot in n_plots:
         Hemisphere[add_row_up:LEVELS_th_ph.shape[0]+add_row_up, LEVELS_th_ph.shape[1]+the_add+2] = Hemisphere[add_row_up:LEVELS_th_ph.shape[0]+add_row_up, add_coll]
     """    
     """add here direct extrapolation if NORAH is applied"""
-    #Theta extrapolation
+    """Theta extrapolation
     # Find the minimum non-zero value
     min_nonzero = Hemisphere[Hemisphere != 0].min()
     # Replace zeros with that value
     Hemisphere = np.where(Hemisphere == 0, min_nonzero, Hemisphere)
+    """
+    # Theta extrapolation
+    # find global min (nonzero)
+    global_min = Hemisphere[Hemisphere != 0].min()
+    # compute local minimum using 2x2 kernel
+    local_min = minimum_filter(Hemisphere!= 0, size=1, mode='nearest')
+    # now fill zeros:
+    # if a zero has no nonzero neighbors, replace it with the global min
+    Hemisphere = np.where(Hemisphere == 0, np.maximum(local_min, global_min), Hemisphere)
     
     #PHI extrapolation (HORIZONTAL ANGLE) estimated for argmin NOHRA constant extrapolation
     phi_up_hemisphere = np.tile(Hemisphere[add_row_up,:], (add_row_up,1))
     phi_down_hemisphere = np.tile(Hemisphere[add_row_up + LEVELS_th_ph.shape[0]-1,:], (add_row_down,1))
+    """Hemisphere[0:add_row_up, :] = phi_up_hemisphere
+    Hemisphere[add_row_up + LEVELS_th_ph.shape[0]::, :] = phi_down_hemisphere"""
+    Hemisphere[0:add_row_up, :] = Hemisphere.min()
+    Hemisphere[add_row_up + LEVELS_th_ph.shape[0]::, :] = Hemisphere.min()
     
-    Hemisphere[0:add_row_up, :] = phi_up_hemisphere
-    Hemisphere[add_row_up + LEVELS_th_ph.shape[0]::, :] = phi_down_hemisphere
     Hemisphere = np.round(Hemisphere,1)
     ## Hemisphere #Saving the full hemisphere by BNADS and OASPL
     ############################################################
