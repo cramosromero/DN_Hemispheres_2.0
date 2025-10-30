@@ -66,10 +66,28 @@ rad = 1 #[m] # radius of the hemisphere to depropagate the sound levels
 ##########################################
 # Measurement name metadata in the filename:
 Cases    = [
-    ['EE','T1',25,'F15','N','S','uw', 2],
-    #['Ed','M3',10,'F15','Y','W','uw', 3]
+    ['Ed','M3',10,'F05','Y','E','dw', 1],
+    # ['Ed','M3',10,'F05','Y','E','uw', 2],
+    # ['Ed','M3',10,'F05','Y','W','uw', 2],
+    # ['Ed','M3',10,'F15','Y','E','uw', 2],
+    # ['Ed','M3',10,'F15','Y','W','dw', 1],
+    # ['Ed','M3',10,'F15','Y','W','dw', 2],
+    # ['Ed','M3',10,'F15','Y','W','dw', 3],
+    # ['Ed','M3',10,'F15','Y','W','uw', 1],
+    # ['Ed','M3',10,'F15','Y','W','uw', 3],
+    
+    # ['EE','T1',25,'F05','N','S','dw', 2],
+    # ['EE','T1',25,'F05','N','S','dw', 3],
+    # ['EE','T1',25,'F05','N','S','dw', 4],
+    # ['EE','T1',25,'F05','N','S','uw', 1],
+    # ['EE','T1',25,'F05','N','S','uw', 2],
+    # ['EE','T1',25,'F05','N','S','uw', 3],
+    # ['EE','T1',25,'F15','N','S','dw', 2],
+    # ['EE','T1',25,'F15','N','S','dw', 1],
+    # ['EE','T1',25,'F15','N','S','dw', 2]
     ] # add more cases if needed [starting, wind, payload, droneID, recording]
 case = 0 # choose the case to process
+# for case in range(len(Cases)):
 
 PILOT   = Cases[case][0] # pilot ID
 DID     = Cases[case][1] # Drone ID
@@ -105,7 +123,7 @@ fig = plots.plot_mics_time(DATA_raw_events, TT, event, DID, lc)
 # This segment could be analized with FFT to obtain the PSD, then the band content
 time_slice = 9 if OPE == 'F15' else 19 # seconds of signal to be segmented
 TIME_r, vec_time, Data_raw_segmented, Data_acu_segmented = TimeTools.segment_time_ADJUST(time_slice, Fs,
-                                                                                              DATA_raw_events, DATA_acu_events)
+                                                                                            DATA_raw_events, DATA_acu_events)
 """PLOTS DATA_mic same microphone, all events"""
 fig = plots.plot_mic_events_time(TIME_r, Data_acu_segmented, event, microphone, DID, acu_metric, lc)
 # fig.savefig(f"{results_folder}\\mic{microphone}_alleve.svg", format="svg", dpi=300)
@@ -499,3 +517,5 @@ with pd.ExcelWriter(f"{results_folder}\\Hem_{identifier}_{event}_{segmented_base
 print(dist_ground_mics)
 print("Process finished --- %s seconds ---" % (time.time() - start_time))  
 # %%
+
+
