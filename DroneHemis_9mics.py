@@ -363,17 +363,24 @@ for i_plot in n_plots:
     Hemisphere[start_row:start_row+LEVELS_th_ph.shape[0], start_col:start_col+LEVELS_th_ph.shape[1]] = LEVELS_th_ph
     
     #Theta extrapolation (VERTICAL ANGLE) estimated for quadcopters
+    """extrapolation based on the quadcopter directivity in the vertical plane """
+    """
     for the_add in range(add_column_left):
         the_to_fill = the_max + 15* (the_add+1) #angle to fill
-        """extrapolation based on the quadcopter directivity in the vertical plane """
+        
         G = -0.0011*((the_to_fill)**2) + 0.194 *abs(the_to_fill) - 4.9 # Eq. (1) rom K. Heutschi el at.
         add_coll = abs(the_add-add_column_left+1)#index of the column for adding data
         Hemisphere[add_row_up:LEVELS_th_ph.shape[0]+add_row_up, add_coll] = Hemisphere[add_row_up:LEVELS_th_ph.shape[0]+add_row_up, 
                                                                                 add_column_left-the_add] - G
         #symetric behaivour
         Hemisphere[add_row_up:LEVELS_th_ph.shape[0]+add_row_up, LEVELS_th_ph.shape[1]+the_add+2] = Hemisphere[add_row_up:LEVELS_th_ph.shape[0]+add_row_up, add_coll]
-        
-        """add here direct extrapolation if NORAH is applied"""
+    """    
+    """add here direct extrapolation if NORAH is applied"""
+    #Theta extrapolation
+    # Find the minimum non-zero value
+    min_nonzero = Hemisphere[Hemisphere != 0].min()
+    # Replace zeros with that value
+    Hemisphere = np.where(Hemisphere == 0, min_nonzero, Hemisphere)
     
     #PHI extrapolation (HORIZONTAL ANGLE) estimated for argmin NOHRA constant extrapolation
     phi_up_hemisphere = np.tile(Hemisphere[add_row_up,:], (add_row_up,1))
